@@ -5,14 +5,14 @@ const { upload } = require("./upload");
 
 app.use(bodyParser.json());
 
-app.post("/file_upload", upload.single("fileDb"), async (req, res) => {
-  console.log(req.file);
-  if (!req.file) {
-    res.send("No files to upload.");
-    return;
-  }
-  res.send("ok").end();
-});
+app.post('/upload', upload.single('fileDb'), function(req, res, next) {
+  res.send('Successfully uploaded :',req.file)
+  console.log("body>>>>>> ",req.body)
+})
+
+app.get('/list', function(req, res, next) {
+  res.send('Under Contruction')
+})
 
 
 // /////////////////////////////////////////////////////////////////////////////
