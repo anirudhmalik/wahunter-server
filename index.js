@@ -6,12 +6,8 @@ const { upload } = require("./upload");
 app.use(bodyParser.json());
 
 app.post("/upload", function (req, res) {
-  const { id } = req.body;
-  if (!id) {
-    res.send("BLalalala");
-  }
+  console.log("1>>>> ",req.body)
   let uploadOne = upload.single(id);
-  console.log("3>>>>>>> ", uploadOne);
   uploadOne(req, res, async (err) => {
     if (err) {
       return res.status(400).send(
