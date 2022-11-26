@@ -9,10 +9,10 @@ app.post('/upload', upload.single('file'), function(req, res) {
   res.send(req.file)
 })
 
-app.get('/file', function(req, res, next) {
+app.get('/file', async function(req, res, next) {
   console.log(req.query)
   console.log(req.params)
- const url = getSignedUrl(req.query.fileName);
+ const url = await getSignedUrl(req.query.fileName);
  console.log(url)
  res.send(url)
 
