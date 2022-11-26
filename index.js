@@ -10,7 +10,7 @@ app.post('/upload', upload.single('file'), function(req, res) {
 })
 
 app.get('/file', function(req, res, next) {
- const url = getSignedUrl(req.params.fileName);
+ const url = getSignedUrl(req.query.fileName);
  console.log(url)
  res.send(url)
 
