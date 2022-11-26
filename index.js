@@ -26,7 +26,9 @@ app.get("/list", async function (req, res) {
 });
 
 app.get("/file", async function (req, res, next) {
-  const url = await getSignedUrl(req.query.fileName);
+  const item = await db.collection("wahunter").get(req.query.id);
+  console.log(item)
+  const url = await getSignedUrl(item.fileName);
   res.send(url);
 });
 
