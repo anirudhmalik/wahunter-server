@@ -5,6 +5,7 @@ const multerS3 = require("multer-s3");
 const bucket = new AWS.S3();
 
 const getSignedUrl = async (fileName) => {
+  console.log(fileName)
   const url = await bucket.getSignedUrl('getObject', {
       Key: fileName,
       Bucket: process.env.BUCKET,
