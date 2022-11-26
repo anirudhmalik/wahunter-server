@@ -1,22 +1,34 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const db = require("cyclic-dynamodb");
+
 const { upload, getSignedUrl } = require("./upload");
 
 app.use(bodyParser.json());
 
-app.post('/upload', upload.single('file'), function(req, res) {
-  res.send(req.file)
-})
+app.post("/upload", upload.single("file"), async function (req, res) {
+  const { id } = req.body;
+  if (!id) {
+    return res.send("No id passed in body!");
+  }
+  const { originalname, location } = req.file;
+  const item = await db.collection("wahunter").set(id, {
+    fileName: originalname,
+    url: location,
+  });
+  res.send(item);
+});
 
-app.get('/file', async function(req, res, next) {
-  console.log(req.query)
-  console.log(req.params)
- const url = await getSignedUrl(req.query.fileName);
- console.log(url)
- res.send(url)
+app.get("/list", async function (req, res) {
+  const items = await db.collection("wahunter").list();
+  res.send(items);
+});
 
-})
+app.get("/file", async function (req, res, next) {
+  const url = await getSignedUrl(req.query.fileName);
+  res.send(url);
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
