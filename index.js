@@ -6,7 +6,7 @@ const { upload } = require("./upload");
 app.use(bodyParser.json());
 
 app.post('/upload', upload.single('fileDb'), function(req, res, next) {
-  res.send('Successfully uploaded :',req.file)
+  res.send(req.file)
   console.log("body>>>>>> ",req.body)
 })
 
