@@ -8,32 +8,47 @@ const { upload, getSignedUrl } = require("./upload");
 app.use(bodyParser.json());
 
 app.post("/upload", upload.single("file"), async function (req, res) {
-  const { id } = req.body;
-  if (!id) {
-    return res.send("No id passed in body!");
+  try {
+    const { id } = req.body;
+    if (!id) {
+      return res.status(404).send("No id passed in body!");
+    }
+    const { originalname, location } = req.file;
+    const item = await db.collection("wahunter").set(id, {
+      fileName: originalname,
+      url: location,
+    });
+    res.status(201).send(item);
+  } catch (error) {
+    return res.status(404).send("Failed to upload/update db!");
   }
-  const { originalname, location } = req.file;
-  const item = await db.collection("wahunter").set(id, {
-    fileName: originalname,
-    url: location,
-  });
-  res.send(item);
 });
 
 app.get("/list", async function (req, res) {
-  const items = await db.collection("wahunter").list();
-  res.send(items);
+  try {
+    const items = await db.collection("wahunter").list();
+    res.status(201).send(items);
+  } catch (error) {
+    return res.status(404).send("Failed to get data from db!");
+  }
 });
 
-app.get("/file", async function (req, res, next) {
-  const item = await db.collection("wahunter").get(req.query.id);
-  console.log(item.props)
-  const {fileName} = item.props;
-  const url = await getSignedUrl(fileName);
-  res.send(url);
+app.get("/file", async function (req, res) {
+  try {
+    const item = await db.collection("wahunter").get(req.query.id);
+    if (item != null && item?.props) {
+      const { fileName } = item?.props;
+      const url = await getSignedUrl(fileName);
+      res.status(201).send(url);
+    } else {
+      return res.status(404).send("No data for requested id!");
+    }
+  } catch (error) {
+    return res.status(404).send("Failed to get download link from db!");
+  }
 });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`index.js listening at http://localhost:${port}`);
+  console.log(`wahunter-server is up and listening for connection!`);
 });
