@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const { upload } = require("./upload");
+const { upload, getSignedUrl } = require("./upload");
 
 app.use(bodyParser.json());
 
@@ -9,8 +9,11 @@ app.post('/upload', upload.single('file'), function(req, res) {
   res.send(req.file)
 })
 
-app.get('/list', function(req, res, next) {
-  res.send('Under Contruction')
+app.get('/file', function(req, res, next) {
+ const url = getSignedUrl(req.params.fileName);
+ console.log(url)
+ res.send(url)
+
 })
 
 const port = process.env.PORT || 3000;
