@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
 const db = require("cyclic-dynamodb");
 
 const { upload, getSignedUrl } = require("./upload");
 
-app.use(bodyParser.json());
+app.use(express.json({limit: '100mb'}));
+app.use(express.urlencoded({limit: '100mb'}));
 
 app.post("/upload", upload.single("file"), async function (req, res) {
   try {
