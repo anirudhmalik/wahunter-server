@@ -5,15 +5,34 @@ const { upload } = require("./upload");
 
 app.use(bodyParser.json());
 
-app.post('/upload', upload.single('fileDb'), function(req, res, next) {
-  res.send(req.file)
-  console.log("body>>>>>> ",req.body)
-})
+app.post("/upload", function (req, res) {
+  const { id } = req.body;
+  if (!id) {
+    res.send("BLalalala");
+  }
+  let uploadOne = upload.single(id);
+  console.log("3>>>>>>> ", uploadOne);
+  uploadOne(req, res, async (err) => {
+    if (err) {
+      return res.status(400).send(
+        JSON.stringify({
+          message: "File submission failed.",
+          file: [],
+        })
+      );
+    }
+    return res.status(201).send(
+      JSON.stringify({
+        message: "File uploaded successfully.",
+        file: req.file,
+      })
+    );
+  });
+});
 
-app.get('/list', function(req, res, next) {
-  res.send('Under Contruction')
-})
-
+app.get("/list", function (req, res, next) {
+  res.send("Under Contruction");
+});
 
 // /////////////////////////////////////////////////////////////////////////////
 // Catch all handler for all other request.
