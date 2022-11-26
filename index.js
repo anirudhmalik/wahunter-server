@@ -27,8 +27,9 @@ app.get("/list", async function (req, res) {
 
 app.get("/file", async function (req, res, next) {
   const item = await db.collection("wahunter").get(req.query.id);
-  console.log(item)
-  const url = await getSignedUrl(item.fileName);
+  console.log(item.props)
+  const {fileName} = item.props;
+  const url = await getSignedUrl(fileName);
   res.send(url);
 });
 
